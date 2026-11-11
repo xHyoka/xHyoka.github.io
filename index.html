@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tunahan Çan</title>
+<meta name="description" content="Tunahan Çan — İKÇÜ Bilgisayar Mühendisliği öğrencisi, Java ve Spring Boot ile backend geliştiriyor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Plan: siyah zemin, beyaz mürekkep, gri kesikli çizgiler. Renk yok; hiyerarşi ağırlık ve boyutla.
+   Cesaret tek yerde: dev, dar başlık. Gerisi sakin. Tek tema (koyu). */
+:root {
+  --bg: #0a0a0b;
+  --surface: #141415;
+  --ink: #f3f3f1;
+  --muted: #a3a3a0;
+  --line: #2b2b2d;
+  --stitch: #6f6f6c;      /* kesikli çizgi */
+  --stitch-ink: #ffffff;  /* vurgu metni */
+  --twill: rgba(255, 255, 255, .018);
+  --ok: #9ad6b0;
+  --warn: #e0c47c;
+  --err: #ef9a9a;
+  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: repeating-linear-gradient(135deg, transparent 0 3px, var(--twill) 3px 4px);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration-color: var(--stitch); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--stitch); outline-offset: 3px; border-radius: 2px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+.mono { font-family: var(--font-mono); font-size: .82em; letter-spacing: -.01em; }
+
+/* Üst şerit */
+.nav {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 2px dashed var(--stitch);
+}
+.nav .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 22px; padding-top: 10px; padding-bottom: 10px; }
+.nav .brand { font-family: var(--font-display); font-stretch: 62%; font-weight: 900; font-size: 22px; letter-spacing: .02em; text-decoration: none; margin-right: auto; }
+.nav a.ep { font-family: var(--font-mono); font-size: 13px; text-decoration: none; color: var(--muted); }
+.nav a.ep b { color: var(--ink); font-weight: 700; }
+.nav a.ep:hover { color: var(--ink); }
+
+/* Giriş */
+.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: end; padding: 56px 0 48px; }
+.hero h1 {
+  font-family: var(--font-display); font-stretch: 62%; font-weight: 900;
+  font-size: clamp(76px, 15vw, 190px); line-height: .84; letter-spacing: -.01em;
+  margin: 0 0 22px; text-wrap: balance;
+}
+.hero h1 span { display: block; }
+.hero h1 .last { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+.hero p.lead { font-size: 20px; max-width: 34ch; margin: 0 0 22px; }
+.patch {
+  display: inline-flex; flex-wrap: wrap; gap: 4px 14px; align-items: center;
+  font-family: var(--font-mono); font-size: 12.5px; text-transform: uppercase; letter-spacing: .08em;
+  background: var(--ink); color: var(--bg);
+  padding: 10px 16px; border-radius: 3px;
+  outline: 1.5px dashed rgba(0, 0, 0, .5); outline-offset: -5px;
+}
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.btn {
+  font: 600 15px/1 var(--font-body); padding: 13px 18px; border-radius: 3px; cursor: pointer;
+  border: 2px solid var(--ink); background: var(--ink); color: var(--bg); text-decoration: none; display: inline-block;
+}
+.btn:hover { background: var(--muted); border-color: var(--muted); color: var(--bg); }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn.ghost:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* Konsol */
+.console {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+  outline: 1.5px dashed var(--stitch); outline-offset: -7px;
+  padding: 20px; min-width: 0;
+}
+.console form { display: flex; gap: 8px; }
+.console select, .console input, .console button.send {
+  font-family: var(--font-mono); font-size: 14px; height: 42px; border-radius: 3px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink); padding: 0 10px;
+}
+.console select { font-weight: 700; color: var(--stitch-ink); }
+.console input { flex: 1; min-width: 0; }
+.console button.send { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 700; cursor: pointer; padding: 0 16px; }
+.console button.send:hover { background: var(--muted); border-color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 14px; }
+.chip {
+  font-family: var(--font-mono); font-size: 12px; padding: 5px 9px; border-radius: 99px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--muted);
+}
+.chip:hover, .chip[aria-pressed="true"] { border-color: var(--stitch); color: var(--ink); }
+.status { display: flex; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: 13px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.status .code { font-weight: 700; }
+.status .code.s2 { color: var(--ok); } .status .code.s4 { color: var(--err); } .status .code.s418 { color: var(--warn); }
+.status .ms { color: var(--muted); }
+pre#out { margin: 12px 0 0; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.6; overflow-x: auto; min-height: 232px; white-space: pre; }
+pre#out .k { color: var(--stitch-ink); font-weight: 700; } pre#out .s { color: var(--muted); } pre#out .n, pre#out .b { color: var(--ok); }
+.console .hint { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+
+/* Bölümler */
+section { padding: 56px 0 8px; }
+.seam { height: 7px; border-top: 2px dashed var(--stitch); border-bottom: 2px dashed var(--stitch); opacity: .9; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 26px; }
+.sec-head .route { font-family: var(--font-mono); font-size: 14px; color: var(--stitch-ink); font-weight: 700; }
+.sec-head h2 { font-family: var(--font-display); font-stretch: 62%; font-weight: 900; font-size: clamp(44px, 7vw, 76px); line-height: .9; margin: 0; text-transform: uppercase; }
+.sec-head p { margin: 0; color: var(--muted); max-width: 52ch; flex-basis: 100%; }
+
+/* Projeler */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.filters .chip { font-size: 13px; padding: 7px 13px; }
+.filters .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.projects { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.proj { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.proj[hidden] { display: none; }
+.proj.big { grid-column: span 2; }
+.proj h3 { font-family: var(--font-mono); font-size: 16px; font-weight: 700; margin: 0; overflow-wrap: anywhere; }
+.proj p { margin: 0; }
+.proj .note { border-left: 3px solid var(--stitch); padding-left: 12px; color: var(--muted); font-size: 15px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
+.tag { font-family: var(--font-mono); font-size: 11.5px; border: 1px solid var(--line); border-radius: 3px; padding: 2px 7px; color: var(--muted); }
+.proj .link { font-family: var(--font-mono); font-size: 13px; }
+.count { font-family: var(--font-mono); font-size: 13px; color: var(--muted); margin: 14px 0 0; }
+
+/* Okul */
+.school { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; }
+.timeline { list-style: none; margin: 0; padding: 0 0 0 22px; border-left: 2px dashed var(--stitch); display: grid; gap: 26px; }
+.timeline li { position: relative; }
+.timeline li::before { content: ""; position: absolute; left: -30px; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 3px solid var(--ink); }
+.timeline .when { font-family: var(--font-mono); font-size: 13px; color: var(--stitch-ink); font-weight: 700; }
+.timeline h3 { margin: 2px 0 6px; font-size: 20px; line-height: 1.25; }
+.timeline ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.timeline ul li::before { display: none; }
+.side h3 { font-family: var(--font-mono); font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 10px; }
+.side .block { margin-bottom: 26px; }
+.side .tags { padding-top: 0; }
+.side .tag { font-size: 12.5px; padding: 4px 9px; color: var(--ink); background: var(--surface); }
+.todo { list-style: none; margin: 0; padding: 0; font-family: var(--font-mono); font-size: 14px; display: grid; gap: 6px; }
+.todo li::before { content: "// TODO  "; color: var(--stitch-ink); white-space: pre; }
+
+/* İletişim */
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.ask { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; outline: 1.5px dashed var(--stitch); outline-offset: -7px; padding: 26px; }
+.ask h3 { font-family: var(--font-display); font-stretch: 62%; font-weight: 900; font-size: 40px; line-height: .95; text-transform: uppercase; margin: 0 0 18px; text-wrap: balance; }
+.arena { position: relative; height: 150px; }
+.arena .btn { position: absolute; top: 0; }
+#yes { left: 0; }
+#no { left: 110px; transition: left .18s ease, top .18s ease; }
+#askMsg { font-family: var(--font-mono); font-size: 13.5px; margin: 6px 0 0; min-height: 3.2em; color: var(--muted); }
+#askMsg.yes { color: var(--ok); }
+.ways { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.ways .label { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); display: block; }
+.ways .val { font-size: 21px; font-weight: 600; overflow-wrap: anywhere; }
+.ways .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.copy { font-family: var(--font-mono); font-size: 12px; padding: 5px 10px; border-radius: 3px; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+.copy:hover { border-color: var(--stitch); color: var(--ink); }
+.ways.lit .mail .val { background: var(--ink); color: var(--bg); padding: 0 8px; text-decoration: none; }
+
+footer { margin-top: 64px; padding: 22px 0 40px; border-top: 2px dashed var(--stitch); font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 6px 24px; justify-content: space-between; }
+
+@media (max-width: 860px) {
+  .hero, .school, .contact { grid-template-columns: minmax(0, 1fr); }
+  .hero { padding-top: 36px; gap: 28px; }
+  .proj.big { grid-column: auto; }
+}
+@media (max-width: 420px) {
+  body { font-size: 16px; }
+  .projects { grid-template-columns: minmax(0, 1fr); }
+  .hero h1 .last { -webkit-text-stroke-width: 1.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #no { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#ust">TÇ</a>
+    <a class="ep" href="#projeler"><b>GET</b> /projeler</a>
+    <a class="ep" href="#okul"><b>GET</b> /okul</a>
+    <a class="ep" href="#iletisim"><b>POST</b> /iletisim</a>
+  </div>
+</header>
+
+<main id="ust">
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1><span>TUNAHAN</span><span class="last">ÇAN</span></h1>
+        <p class="lead">İzmir'de bilgisayar mühendisliği okuyorum. Ekranda görünmeyen tarafı yazıyorum: API, veritabanı, kimlik doğrulama.</p>
+        <div class="patch"><span>Backend</span><span>Java 21</span><span>Spring Boot</span><span>İzmir</span></div>
+        <div class="cta">
+          <a class="btn" href="#projeler">Projelere bak</a>
+          <a class="btn ghost" href="#iletisim">2027 yaz stajı için yaz</a>
+        </div>
+      </div>
+
+      <div class="console" aria-label="Deneme konsolu">
+        <form id="reqForm" autocomplete="off">
+          <label class="sr" for="method" hidden>Metot</label>
+          <select id="method" aria-label="Metot">
+            <option>GET</option><option>POST</option><option>DELETE</option>
+          </select>
+          <input id="path" type="text" value="/tunahan" spellcheck="false" aria-label="Endpoint yolu">
+          <button class="send" type="submit">Gönder</button>
+        </form>
+        <div class="chips" id="chips">
+          <button type="button" class="chip" data-m="GET" data-p="/tunahan">GET /tunahan</button>
+          <button type="button" class="chip" data-m="GET" data-p="/stack">GET /stack</button>
+          <button type="button" class="chip" data-m="GET" data-p="/staj">GET /staj</button>
+          <button type="button" class="chip" data-m="GET" data-p="/frontend">GET /frontend</button>
+          <button type="button" class="chip" data-m="DELETE" data-p="/uyku">DELETE /uyku</button>
+          <button type="button" class="chip" data-m="POST" data-p="/kahve">POST /kahve</button>
+        </div>
+        <div class="status"><span class="code s2" id="code">200 OK</span><span class="ms" id="ms">0.0 ms</span></div>
+<pre id="out" aria-live="polite">{
+  <span class="k">"ad"</span>: <span class="s">"Tunahan Çan"</span>,
+  <span class="k">"rol"</span>: <span class="s">"Backend geliştirici"</span>,
+  <span class="k">"okul"</span>: <span class="s">"İKÇÜ Bilgisayar Mühendisliği"</span>,
+  <span class="k">"sınıf"</span>: <span class="n">2</span>,
+  <span class="k">"şehir"</span>: <span class="s">"İzmir"</span>,
+  <span class="k">"ingilizce"</span>: <span class="s">"B2"</span>,
+  <span class="k">"stajArıyor"</span>: <span class="b">true</span>
+}</pre>
+        <p class="hint">Kendi yolunu da yazabilirsin. Olmayan her şey dürüstçe 404 döner.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="seam"></div>
+
+  <section id="projeler">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="route">GET /projeler</span>
+        <h2>Projeler</h2>
+        <p>Hepsi GitHub'da, hepsinin README'si var. Yanlarına kendi yorumumu da yazdım, çünkü hiçbir proje README'deki kadar kusursuz değil.</p>
+      </div>
+
+      <div class="filters" id="filters" role="group" aria-label="Projeleri filtrele">
+        <button type="button" class="chip" data-f="all" aria-pressed="true">Hepsi</button>
+        <button type="button" class="chip" data-f="backend" aria-pressed="false">Backend</button>
+        <button type="button" class="chip" data-f="ai" aria-pressed="false">Yapay zeka</button>
+        <button type="button" class="chip" data-f="canli" aria-pressed="false">Gerçek zamanlı</button>
+        <button type="button" class="chip" data-f="eglence" aria-pressed="false">Eğlence</button>
+      </div>
+
+      <div class="projects" id="projects">
+        <article class="proj big" data-t="backend">
+          <h3>dijital-cuzdan-api</h3>
+          <p>Dijital cüzdan REST API'si. Kayıt ve giriş, JWT ile kimlik doğrulama, hesaplar arası para transferi ve işlem geçmişi. Docker ile ayağa kalkıyor.</p>
+          <p class="note">Çalışıyor ama içime tam sinmiyor. Aynı anda gelen transferlerde bakiyenin eksiye düşmemesi için kilitleme ve refresh token desteği sıradaki işler. TÜBİTAK projemde saldırı tespitini de bunun üzerinde deneyeceğim.</p>
+          <div class="tags"><span class="tag">Java 21</span><span class="tag">Spring Boot</span><span class="tag">Spring Security</span><span class="tag">JWT</span><span class="tag">PostgreSQL</span><span class="tag">Docker</span></div>
+          <a class="link" href="https://github.com/xHyoka/dijital-cuzdan-api" target="_blank" rel="noopener">github.com/xHyoka/dijital-cuzdan-api</a>
+        </article>
+
+        <article class="proj" data-t="backend ai">
+          <h3>spring-ai çoklu ajan</h3>
+          <p>Bir ana ajan (GPT-4o-mini) ve onun araç olarak çağırdığı bir alt ajan (Gemini Flash). Alt ajan araştırmayı yapıyor, ana ajan cevabı topluyor.</p>
+          <p class="note">İki farklı modeli birbirine iş yaptırmak düşündüğümden eğlenceliymiş.</p>
+          <div class="tags"><span class="tag">Spring AI</span><span class="tag">Tool calling</span><span class="tag">OpenAI</span><span class="tag">Gemini</span></div>
+          <span class="link">Repo yolda</span>
+        </article>
+
+        <article class="proj" data-t="backend canli">
+          <h3>chat-App</h3>
+          <p>Çok kanallı gerçek zamanlı sohbet. Mesajlar WebSocket üzerinden STOMP ile gidiyor, geçmiş veritabanında tutuluyor.</p>
+          <p class="note">REST'in dışına ilk çıkışım. İstek atıp cevap beklememek garip bir özgürlük.</p>
+          <div class="tags"><span class="tag">Spring Boot</span><span class="tag">WebSocket</span><span class="tag">STOMP</span></div>
+          <a class="link" href="https://github.com/xHyoka/chat-App" target="_blank" rel="noopener">github.com/xHyoka/chat-App</a>
+        </article>
+
+        <article class="proj" data-t="backend">
+          <h3>student-crud-api</h3>
+          <p>Katmanlı mimari, DTO'lar, validation ve global exception handling ile düzgün kurulmuş bir CRUD servisi.</p>
+          <p class="note">Herkesin bir CRUD projesi vardır. Ben benimkinin temiz olmasına uğraştım.</p>
+          <div class="tags"><span class="tag">Spring Boot</span><span class="tag">JPA</span><span class="tag">Validation</span></div>
+          <a class="link" href="https://github.com/xHyoka/student-crud-api" target="_blank" rel="noopener">github.com/xHyoka/student-crud-api</a>
+        </article>
+
+        <article class="proj" data-t="canli eglence">
+          <h3>ekran</h3>
+          <p>İki kişilik ekran paylaşma ve sohbet sayfası. Bilgisayardan paylaşıyorsun, karşı taraf telefondan izliyor. Kurulum yok, tarayıcı yetiyor.</p>
+          <p class="note">Ürün olsun diye değil, lazım olduğu için yazdım. En çok kullandığım projem bu.</p>
+          <div class="tags"><span class="tag">Tarayıcı</span><span class="tag">GitHub Pages</span></div>
+        </article>
+
+        <article class="proj" data-t="eglence">
+          <h3>Macera-Oyunu</h3>
+          <p>Konsolda çalışan metin tabanlı RPG. Karakter seçimi, tur tabanlı savaş, mağaza ve haritalar.</p>
+          <p class="note">Nesne yönelimli programlamayı bununla kavradım. Kalıtımı canavarlar üzerinden öğrenmek akılda kalıyor.</p>
+          <div class="tags"><span class="tag">Java</span><span class="tag">OOP</span></div>
+          <a class="link" href="https://github.com/xHyoka/Macera-Oyunu" target="_blank" rel="noopener">github.com/xHyoka/Macera-Oyunu</a>
+        </article>
+
+        <article class="proj" data-t="eglence">
+          <h3>Beni-Seviyormusun</h3>
+          <p>Java Swing ile yazılmış EVET / HAYIR uygulaması. Tek bir soru soruyor.</p>
+          <p class="note">Ciddi bir proje değil, olması da gerekmiyor. Aynı ruhla bir tanesi <a href="#iletisim">aşağıda</a> duruyor.</p>
+          <div class="tags"><span class="tag">Java</span><span class="tag">Swing</span></div>
+          <a class="link" href="https://github.com/xHyoka/Beni-Seviyormusun" target="_blank" rel="noopener">github.com/xHyoka/Beni-Seviyormusun</a>
+        </article>
+      </div>
+      <p class="count" id="count">7 kayıt döndü</p>
+    </div>
+  </section>
+
+  <section id="okul">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="route">GET /okul</span>
+        <h2>Okul</h2>
+        <p>Aydın'da başladım, İzmir'de devam ediyorum.</p>
+      </div>
+
+      <div class="school">
+        <ol class="timeline">
+          <li>
+            <span class="when">1. sınıf</span>
+            <h3>Aydın Adnan Menderes Üniversitesi, Bilgisayar Mühendisliği</h3>
+            <ul>
+              <li>Üniversitenin AWS topluluğuna etkinlik yöneticisi olarak kabul edildim. Yatay geçiş araya girince devam edemedim.</li>
+              <li>Yazı Spring Boot'a ayırdım. Dijital cüzdan API o yazdan çıktı.</li>
+            </ul>
+          </li>
+          <li>
+            <span class="when">2. sınıf, şu an</span>
+            <h3>İzmir Kâtip Çelebi Üniversitesi, Bilgisayar Mühendisliği</h3>
+            <ul>
+              <li>Yatay geçişle geldim.</li>
+              <li>IEEE İKÇÜ Computer Society teknik ekibindeyim.</li>
+              <li>TÜBİTAK 2209-A'ya başvurdum: zararlı web isteklerini (SQLi, XSS) doğal dil işleme ile yakalayıp kural tabanlı yöntemlerle karşılaştırmak. Danışman onayı tamam, sonuç bekleniyor.</li>
+            </ul>
+          </li>
+          <li>
+            <span class="when">Sırada</span>
+            <h3>2027 yaz stajı</h3>
+            <ul>
+              <li>Backend tarafında, gerçek bir ekibin içinde çalışmak istiyorum.</li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="side">
+          <div class="block">
+            <h3>Bu dönem</h3>
+            <div class="tags">
+              <span class="tag">Theory of Computation</span><span class="tag">Computer Networks</span><span class="tag">Tasarım Örüntüleri</span><span class="tag">Nesne Yönelimli Programlama</span><span class="tag">Devreler ve Elektronik</span><span class="tag">Diferansiyel Denklemler</span><span class="tag">Lineer Cebir</span>
+            </div>
+          </div>
+          <div class="block">
+            <h3>Elimin altındakiler</h3>
+            <div class="tags">
+              <span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">Spring Security</span><span class="tag">JPA / Hibernate</span><span class="tag">PostgreSQL</span><span class="tag">Redis</span><span class="tag">Docker</span><span class="tag">Git</span><span class="tag">Postman</span>
+            </div>
+          </div>
+          <div class="block">
+            <h3>Öğrenme sırası</h3>
+            <ul class="todo">
+              <li>GitHub Actions</li>
+              <li>Python ve temel ML</li>
+              <li>RabbitMQ ya da Kafka</li>
+              <li>TypeScript + React</li>
+              <li>Prometheus + Grafana</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h3>Dil</h3>
+            <div class="tags"><span class="tag">Türkçe (ana dil)</span><span class="tag">İngilizce B2</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="iletisim">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="route">POST /iletisim</span>
+        <h2>İletişim</h2>
+        <p>Staj, proje ya da kulüp işi. Hepsine açığım.</p>
+      </div>
+
+      <div class="contact">
+        <div class="ask">
+          <h3>Konuşalım mı?</h3>
+          <div class="arena" id="arena">
+            <button type="button" class="btn" id="yes">Evet</button>
+            <button type="button" class="btn ghost" id="no">Hayır</button>
+          </div>
+          <p id="askMsg" aria-live="polite">İki seçenek var. Biri diğerinden biraz daha kolay.</p>
+        </div>
+
+        <ul class="ways" id="ways">
+          <li class="mail">
+            <span class="label">E-posta</span>
+            <div class="row">
+              <a class="val" id="mail" href="mailto:tunahancan.eng@gmail.com">tunahancan.eng@gmail.com</a>
+              <button type="button" class="copy" id="copy">Kopyala</button>
+            </div>
+          </li>
+          <li>
+            <span class="label">GitHub</span>
+            <a class="val" href="https://github.com/xHyoka" target="_blank" rel="noopener">github.com/xHyoka</a>
+          </li>
+          <li>
+            <span class="label">LinkedIn</span>
+            <a class="val" href="https://www.linkedin.com/in/tunahan-%C3%A7an-118854421" target="_blank" rel="noopener">linkedin.com/in/tunahan-çan</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Tunahan Çan</span>
+    <span>Bu site tek bir HTML dosyası. Sunucu yok, yani yukarıdaki API de yok.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Konsol ---------- */
+  var routes = {
+    "/tunahan": { GET: [200, "OK", {
+      "ad": "Tunahan Çan", "rol": "Backend geliştirici", "okul": "İKÇÜ Bilgisayar Mühendisliği",
+      "sınıf": 2, "şehir": "İzmir", "ingilizce": "B2", "stajArıyor": true
+    }]},
+    "/stack": { GET: [200, "OK", {
+      "ana": ["Java 21", "Spring Boot", "PostgreSQL", "Docker"],
+      "güvenlik": ["Spring Security", "JWT"],
+      "yanında": ["Redis", "JPA/Hibernate", "WebSocket", "Spring AI"],
+      "sırada": ["GitHub Actions", "Python + ML", "RabbitMQ"]
+    }]},
+    "/projeler": { GET: [200, "OK", {
+      "adet": 7, "öneÇıkan": "dijital-cuzdan-api", "detay": "#projeler"
+    }]},
+    "/staj": { GET: [200, "OK", {
+      "uygun": true, "dönem": "2027 yaz", "alan": "backend",
+      "yanİlgi": ["yapay zeka", "siber güvenlik"], "iletişim": "#iletisim"
+    }]},
+    "/okul": { GET: [200, "OK", {
+      "şimdi": "İzmir Kâtip Çelebi Üniversitesi", "önce": "Aydın Adnan Menderes Üniversitesi", "detay": "#okul"
+    }]},
+    "/frontend": { GET: [404, "Not Found", {
+      "mesaj": "Henüz yok. Listede ama önce Python.", "tahmin": "Bir gün 200 dönecek."
+    }]},
+    "/uyku": { DELETE: [403, "Forbidden", {
+      "mesaj": "Bunu silmeye yetkin yok.", "not": "Vize haftasında kendiliğinden siliniyor zaten."
+    }], GET: [200, "OK", { "saat": "değişken" }] },
+    "/kahve": { POST: [418, "I'm a teapot", {
+      "mesaj": "Ben bir çaydanlığım.", "bkz": "RFC 2324"
+    }]},
+    "/iletisim": { POST: [200, "OK", {
+      "mesaj": "Form yok, e-posta var.", "git": "#iletisim"
+    }]}
+  };
+
+  var form = document.getElementById("reqForm");
+  var methodEl = document.getElementById("method");
+  var pathEl = document.getElementById("path");
+  var codeEl = document.getElementById("code");
+  var msEl = document.getElementById("ms");
+  var outEl = document.getElementById("out");
+  var chips = document.querySelectorAll("#chips .chip");
+
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function paint(obj) {
+    var json = esc(JSON.stringify(obj, null, 2));
+    return json.replace(/("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d+)?/g,
+      function (m, str, colon, kw) {
+        if (str) return colon ? '<span class="k">' + str + "</span>" + colon : '<span class="s">' + str + "</span>";
+        if (kw) return '<span class="b">' + m + "</span>";
+        return '<span class="n">' + m + "</span>";
+      });
+  }
+  function send() {
+    var t0 = performance.now();
+    var method = methodEl.value;
+    var path = (pathEl.value || "").trim().toLowerCase().split("?")[0];
+    if (path && path.charAt(0) !== "/") path = "/" + path;
+    if (path.length > 1) path = path.replace(/\/+$/, "");
+    var res;
+    var route = routes[path];
+    if (!route) {
+      res = [404, "Not Found", { "hata": "Böyle bir endpoint yok.", "dene": ["/tunahan", "/stack", "/projeler", "/staj", "/okul"] }];
+    } else if (!route[method]) {
+      res = [405, "Method Not Allowed", { "hata": "Bu endpoint " + method + " kabul etmiyor.", "izinli": Object.keys(route) }];
+    } else {
+      res = route[method];
+    }
+    outEl.innerHTML = paint(res[2]);
+    codeEl.textContent = res[0] + " " + res[1];
+    codeEl.className = "code " + (res[0] === 418 ? "s418" : res[0] < 300 ? "s2" : "s4");
+    msEl.textContent = (performance.now() - t0).toFixed(1) + " ms";
+    chips.forEach(function (c) {
+      c.setAttribute("aria-pressed", String(c.dataset.m === method && c.dataset.p === path));
+    });
+  }
+  form.addEventListener("submit", function (e) { e.preventDefault(); send(); });
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      methodEl.value = c.dataset.m; pathEl.value = c.dataset.p; send();
+    });
+  });
+  send();
+
+  /* ---------- Proje filtresi ---------- */
+  var filterBtns = document.querySelectorAll("#filters .chip");
+  var cards = document.querySelectorAll("#projects .proj");
+  var countEl = document.getElementById("count");
+  filterBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var f = b.dataset.f, n = 0;
+      filterBtns.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      cards.forEach(function (c) {
+        var show = f === "all" || c.dataset.t.split(" ").indexOf(f) !== -1;
+        c.hidden = !show; if (show) n++;
+      });
+      countEl.textContent = n + " kayıt döndü" + (f === "all" ? "" : "  (?etiket=" + f + ")");
+    });
+  });
+
+  /* ---------- Evet / Hayır ---------- */
+  var arena = document.getElementById("arena");
+  var yes = document.getElementById("yes");
+  var no = document.getElementById("no");
+  var askMsg = document.getElementById("askMsg");
+  var ways = document.getElementById("ways");
+  var dodges = 0, answered = false;
+  var lines = [
+    "Hayır şu an meşgul.",
+    "429 Too Many Requests. Biraz yavaş.",
+    "Hayır endpoint'i bakımda.",
+    "503 Service Unavailable. Evet ise ayakta.",
+    "Israrcısın. Bu iyi bir özellik, staj mülakatında söylerim."
+  ];
+  function dodge() {
+    if (answered) return;
+    var aw = arena.clientWidth, ah = arena.clientHeight;
+    var bw = no.offsetWidth, bh = no.offsetHeight;
+    var yw = yes.offsetWidth + 16, yh = yes.offsetHeight + 12;
+    var x, y, tries = 0;
+    do {
+      x = Math.random() * Math.max(0, aw - bw);
+      y = Math.random() * Math.max(0, ah - bh);
+      tries++;
+    } while (tries < 20 && ((x < yw && y < yh) || (Math.abs(x - no.offsetLeft) < 70 && Math.abs(y - no.offsetTop) < 40)));
+    no.style.left = x + "px"; no.style.top = y + "px";
+    askMsg.className = "";
+    askMsg.textContent = lines[Math.min(dodges, lines.length - 1)];
+    dodges++;
+  }
+  no.addEventListener("pointerenter", dodge);
+  no.addEventListener("pointerdown", function (e) { e.preventDefault(); dodge(); });
+  no.addEventListener("focus", dodge);
+  no.addEventListener("click", function (e) { e.preventDefault(); });
+  yes.addEventListener("click", function () {
+    answered = true;
+    no.disabled = true; no.style.opacity = ".35";
+    askMsg.className = "yes";
+    askMsg.textContent = "200 OK. Güzel karar. En hızlısı e-posta, adres hemen yanda.";
+    ways.classList.add("lit");
+  });
+
+  /* ---------- Kopyala ---------- */
+  var copyBtn = document.getElementById("copy");
+  copyBtn.addEventListener("click", function () {
+    var addr = document.getElementById("mail").textContent;
+    var done = function (ok) {
+      copyBtn.textContent = ok ? "Kopyalandı" : "Elle seç, kopyala";
+      setTimeout(function () { copyBtn.textContent = "Kopyala"; }, 1800);
+    };
+    try { navigator.clipboard.writeText(addr).then(function () { done(true); }, function () { done(false); }); }
+    catch (err) { done(false); }
+  });
+})();
+</script>
+</body>
+</html>
