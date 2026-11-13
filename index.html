@@ -54,19 +54,20 @@ a:hover { text-decoration-color: var(--ink); }
   border-bottom: 2px dashed var(--stitch);
 }
 .nav .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 22px; padding-top: 10px; padding-bottom: 10px; }
-.nav .brand { font-family: var(--font-display); font-stretch: 62%; font-weight: 900; font-size: 22px; letter-spacing: .02em; text-decoration: none; margin-right: auto; }
+.nav .brand { font-family: var(--font-display); font-stretch: 62%; font-variation-settings: "wdth" 62; font-weight: 900; font-size: 22px; letter-spacing: .02em; text-decoration: none; margin-right: auto; }
 .nav a.ep { font-family: var(--font-mono); font-size: 13px; text-decoration: none; color: var(--muted); }
 .nav a.ep b { color: var(--ink); font-weight: 700; }
 .nav a.ep:hover { color: var(--ink); }
 
 /* Giriş */
-.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: end; padding: 56px 0 48px; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 32px 40px; align-items: start; padding: 48px 0 48px; }
+.hero .name { grid-column: 1 / -1; min-width: 0; }
 .hero h1 {
-  font-family: var(--font-display); font-stretch: 62%; font-weight: 900;
-  font-size: clamp(76px, 15vw, 190px); line-height: .84; letter-spacing: -.01em;
-  margin: 0 0 22px; text-wrap: balance;
+  font-family: var(--font-display); font-stretch: 62%; font-variation-settings: "wdth" 62; font-weight: 900;
+  font-size: clamp(52px, 11vw, 124px); line-height: 1; letter-spacing: -.01em;
+  margin: 0; padding-bottom: .12em;
 }
-.hero h1 span { display: block; }
+.hero h1 span { display: inline-block; white-space: nowrap; }
 .hero h1 .last { color: transparent; -webkit-text-stroke: 2px var(--ink); }
 .hero p.lead { font-size: 20px; max-width: 34ch; margin: 0 0 22px; }
 .patch {
@@ -119,7 +120,7 @@ section { padding: 56px 0 8px; }
 .seam { height: 7px; border-top: 2px dashed var(--stitch); border-bottom: 2px dashed var(--stitch); opacity: .9; }
 .sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 26px; }
 .sec-head .route { font-family: var(--font-mono); font-size: 14px; color: var(--stitch-ink); font-weight: 700; }
-.sec-head h2 { font-family: var(--font-display); font-stretch: 62%; font-weight: 900; font-size: clamp(44px, 7vw, 76px); line-height: .9; margin: 0; text-transform: uppercase; }
+.sec-head h2 { font-family: var(--font-display); font-stretch: 62%; font-variation-settings: "wdth" 62; font-weight: 900; font-size: clamp(44px, 7vw, 76px); line-height: .9; margin: 0; text-transform: uppercase; }
 .sec-head p { margin: 0; color: var(--muted); max-width: 52ch; flex-basis: 100%; }
 
 /* Projeler */
@@ -157,7 +158,7 @@ section { padding: 56px 0 8px; }
 /* İletişim */
 .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
 .ask { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; outline: 1.5px dashed var(--stitch); outline-offset: -7px; padding: 26px; }
-.ask h3 { font-family: var(--font-display); font-stretch: 62%; font-weight: 900; font-size: 40px; line-height: .95; text-transform: uppercase; margin: 0 0 18px; text-wrap: balance; }
+.ask h3 { font-family: var(--font-display); font-stretch: 62%; font-variation-settings: "wdth" 62; font-weight: 900; font-size: 40px; line-height: .95; text-transform: uppercase; margin: 0 0 18px; text-wrap: balance; }
 .arena { position: relative; height: 150px; }
 .arena .btn { position: absolute; top: 0; }
 #yes { left: 0; }
@@ -205,8 +206,10 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 6px 24px; justify-content: s
 <main id="ust">
   <div class="wrap">
     <div class="hero">
+      <div class="name">
+        <h1><span>TUNAHAN</span> <span class="last">ÇAN</span></h1>
+      </div>
       <div>
-        <h1><span>TUNAHAN</span><span class="last">ÇAN</span></h1>
         <p class="lead">İzmir'de bilgisayar mühendisliği okuyorum. Ekranda görünmeyen tarafı yazıyorum: API, veritabanı, kimlik doğrulama.</p>
         <div class="patch"><span>Backend</span><span>Java 21</span><span>Spring Boot</span><span>İzmir</span></div>
         <div class="cta">
@@ -436,7 +439,6 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 6px 24px; justify-content: s
 <footer>
   <div class="wrap">
     <span>© 2026 Tunahan Çan</span>
-    <span>Bu site tek bir HTML dosyası. Sunucu yok, yani yukarıdaki API de yok.</span>
   </div>
 </footer>
 
